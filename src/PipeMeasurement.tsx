@@ -23,6 +23,41 @@ const ChevronDown = () => (
   </svg>
 );
 
+const PlusIcon = () => (
+  <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+    <path d="M5 1V9M1 5H9" stroke="#171717" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+// ---- Panel-level prompt (unanswered state) ----
+
+const PromptCard: React.FC<{
+  onAnswer: (answer: "yes" | "no") => void;
+}> = ({ onAnswer }) => (
+  <div className="pm-section pm-section--prompt">
+    <p className="pm-prompt__question">Is there a wall pipe obstacle?</p>
+    <div className="pm-prompt__actions">
+      <button className="pm-prompt__btn pm-prompt__btn--yes" type="button"
+        onClick={() => onAnswer("yes")}>Yes</button>
+      <button className="pm-prompt__btn pm-prompt__btn--no" type="button"
+        onClick={() => onAnswer("no")}>No</button>
+    </div>
+  </div>
+);
+
+// ---- Panel-level no-pipe card (no state) ----
+
+const NoPipeCard: React.FC<{
+  onSwitchToYes: () => void;
+}> = ({ onSwitchToYes }) => (
+  <div className="pm-section pm-section--no-pipe">
+    <p className="pm-no-pipe__message">パイプはありません</p>
+    <button className="pm-no-pipe__switch-btn" type="button" onClick={onSwitchToYes}>
+      変更する
+    </button>
+  </div>
+);
+
 // ---- InputField ----
 
 interface InputFieldProps {
@@ -91,7 +126,7 @@ const InputField: React.FC<InputFieldProps> = ({
   );
 };
 
-// ---- Active section ----
+// ---- Active section (yes + isActive) ----
 
 interface SectionCardProps {
   section: PipeSection;
@@ -109,7 +144,6 @@ const SectionCard: React.FC<SectionCardProps> = ({
 }) => {
   const sid = section.id;
   const fid = (path: string) => `${sid}.${path}`;
-  // exact match (form focus) OR prefix match (diagram click e.g. "robot-origin.upperBox")
   const isF = (path: string) => {
     const fullId = fid(path);
     return !!focusedField && (fullId === focusedField || fullId.startsWith(focusedField + "."));
@@ -164,40 +198,14 @@ const SectionCard: React.FC<SectionCardProps> = ({
   );
 };
 
-// ---- Prompt card (unanswered state) ----
+// ---- Collapsed section (yes + !isActive) ----
 
-const PromptCard: React.FC<{
-  section: PipeSection;
-  onAnswer: (id: string, answer: "yes" | "no") => void;
-}> = ({ section, onAnswer }) => (
-  <div className="pm-section pm-section--prompt">
-    <span className="pm-section__title">{section.label}</span>
-    <p className="pm-prompt__question">Is there a wall pipe obstacle?</p>
-    <div className="pm-prompt__actions">
-      <button className="pm-prompt__btn pm-prompt__btn--yes" type="button"
-        onClick={() => onAnswer(section.id, "yes")}>Yes</button>
-      <button className="pm-prompt__btn pm-prompt__btn--no" type="button"
-        onClick={() => onAnswer(section.id, "no")}>No</button>
-    </div>
-  </div>
-);
-
-// ---- No-pipe card (no state) ----
-
-const NoPipeCard: React.FC<{
-  section: PipeSection;
-  onDelete: (id: string) => void;
-}> = ({ section, onDelete }) => (
-  <div className="pm-section pm-section--no-pipe">
-    <div className="pm-section__header">
-      <span className="pm-section__title">{section.label}</span>
-      <button className="pm-section__delete-btn" onClick={() => onDelete(section.id)} type="button">
-        <TrashIcon /><span>削除</span>
-      </button>
-    </div>
-    <p className="pm-no-pipe__message">
-      No pipe-related inputs or diagram will be displayed.
-    </p>
+const CollapsedCard: React.FC<{ label: string; onAdd: () => void }> = ({ label, onAdd }) => (
+  <div className="pm-section pm-section--collapsed">
+    <span className="pm-section__title">{label}</span>
+    <button className="pm-section__add-btn" onClick={onAdd} type="button">
+      <PlusIcon /><span>パイプを追加</span>
+    </button>
   </div>
 );
 
@@ -205,10 +213,12 @@ const NoPipeCard: React.FC<{
 
 export interface PipeMeasurementProps {
   sections: PipeSection[];
+  pipeAnswer: "unanswered" | "yes" | "no";
   focusedField: string | null;
   onUpdate: (updated: PipeSection) => void;
   onDelete: (id: string) => void;
-  onAnswer: (id: string, answer: "yes" | "no") => void;
+  onAdd: (id: string) => void;
+  onAnswer: (answer: "yes" | "no") => void;
   onFieldFocus: (fieldId: string) => void;
   onFieldBlur: () => void;
   onFieldHover: (fieldId: string) => void;
@@ -216,31 +226,41 @@ export interface PipeMeasurementProps {
 }
 
 const PipeMeasurement: React.FC<PipeMeasurementProps> = ({
-  sections, focusedField, onUpdate, onDelete, onAnswer, onFieldFocus, onFieldBlur, onFieldHover, onFieldHoverEnd,
+  sections, pipeAnswer, focusedField,
+  onUpdate, onDelete, onAdd, onAnswer,
+  onFieldFocus, onFieldBlur, onFieldHover, onFieldHoverEnd,
 }) => {
-  const activePipes = sections.filter((s) => s.pipePresent === "yes").length;
+  const activePipes = sections.filter((s) => s.isActive).length;
+
   return (
     <div className="pm-panel">
       <div className="pm-header">
         <span className="pm-header__title">パイプ</span>
-        <span className="pm-header__subtitle">{activePipes}パイプ</span>
+        {pipeAnswer === "yes" && (
+          <span className="pm-header__subtitle">{activePipes}パイプ</span>
+        )}
       </div>
-      {sections.map((s) => {
-        if (s.pipePresent === "yes") {
-          return (
-            <SectionCard
-              key={s.id} section={s} focusedField={focusedField}
-              onUpdate={onUpdate} onDelete={onDelete}
-              onFieldFocus={onFieldFocus} onFieldBlur={onFieldBlur}
-              onFieldHover={onFieldHover} onFieldHoverEnd={onFieldHoverEnd}
-            />
-          );
-        }
-        if (s.pipePresent === "no") {
-          return <NoPipeCard key={s.id} section={s} onDelete={onDelete} />;
-        }
-        return <PromptCard key={s.id} section={s} onAnswer={onAnswer} />;
-      })}
+
+      {pipeAnswer === "unanswered" && (
+        <PromptCard onAnswer={onAnswer} />
+      )}
+
+      {pipeAnswer === "no" && (
+        <NoPipeCard onSwitchToYes={() => onAnswer("yes")} />
+      )}
+
+      {pipeAnswer === "yes" && sections.map((s) =>
+        s.isActive ? (
+          <SectionCard
+            key={s.id} section={s} focusedField={focusedField}
+            onUpdate={onUpdate} onDelete={onDelete}
+            onFieldFocus={onFieldFocus} onFieldBlur={onFieldBlur}
+            onFieldHover={onFieldHover} onFieldHoverEnd={onFieldHoverEnd}
+          />
+        ) : (
+          <CollapsedCard key={s.id} label={s.label} onAdd={() => onAdd(s.id)} />
+        )
+      )}
     </div>
   );
 };

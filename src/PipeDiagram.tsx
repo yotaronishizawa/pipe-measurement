@@ -444,25 +444,18 @@ const PipeDiagram: React.FC<PipeDiagramProps> = ({ sections, focusedField, onReg
   <div className="pd-card">
     <span className="pd-title">パイプ</span>
     <div className="pd-sections">
-      {sections.map((s) => {
-        if (s.pipePresent === "yes") {
-          return (
-            <SectionSvg key={s.id} section={s} focusedField={focusedField} onRegionFocus={onRegionFocus} />
-          );
-        }
-        if (s.pipePresent === "no") {
-          return null; // form side already shows the "no pipe" message
-        }
-        // unanswered: show empty placeholder SVG
-        return (
+      {sections.map((s) =>
+        s.isActive ? (
+          <SectionSvg key={s.id} section={s} focusedField={focusedField} onRegionFocus={onRegionFocus} />
+        ) : (
           <img
             key={s.id}
             src={s.id === "robot-origin" ? robotEmptySvg : oppositeEmptySvg}
             alt={s.label}
             className="pd-section-img"
           />
-        );
-      })}
+        )
+      )}
     </div>
   </div>
 );

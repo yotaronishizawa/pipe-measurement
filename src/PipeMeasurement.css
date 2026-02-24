@@ -270,8 +270,63 @@
 /* No-pipe card (no state) -------------------------------------- */
 .pm-no-pipe__message {
   margin: 0;
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.pm-no-pipe__switch-btn {
+  align-self: flex-start;
+  padding: 6px 14px;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-family: "Inter", sans-serif;
   font-size: 13px;
+  font-weight: 500;
   color: #6b7280;
-  font-style: italic;
-  line-height: 20px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.pm-no-pipe__switch-btn:hover {
+  background: #f9fafb;
+}
+
+/* "パイプを追加" button ----------------------------------------- */
+.pm-section__add-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9.5px 24px;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #111928;
+  box-sizing: border-box;
+  transition: background 0.15s;
+}
+
+.pm-section__add-btn:hover {
+  background: #e5e7eb;
+}
+
+.pm-section__add-btn:active {
+  background: #d1d5db;
+}
+
+/* Collapsed section -------------------------------------------- */
+.pm-section--collapsed {
+  gap: 0;
+}
+
+.pm-section--collapsed .pm-section__title {
+  margin-bottom: 24px;
 }
