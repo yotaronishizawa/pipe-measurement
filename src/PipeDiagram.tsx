@@ -12,6 +12,10 @@ const DS_ORIGIN_Y   = 492;   // y-position of DS origin point
 const AREA_TOP      = 148.5; // top of SS / DS bounding areas
 const AREA_H        = 343;   // height of SS / DS areas
 
+// Real-world scale: SS/DS physical height ≈ 1900 mm → AREA_H px
+const SCALE   = AREA_H / 1900;           // px per mm
+const mmToPx  = (mm: number) => mm * SCALE;
+
 // ── Robot-origin: DS is to the RIGHT of the pipe ─────────────────────────────
 const R_DS_ORIGIN_X = 292;
 const R_SS = { x: 16.5,    w: 139 }; // SS area (left side)
@@ -32,14 +36,14 @@ const WALL_W   = 13;
 const WALL_TOP = 97;
 const WALL_H   = 395;
 
-// Default values derived from the original static SVGs
+// Default values in mm (derived from original SVG px values via 1900/343 factor)
 const R_DEF = {
-  upperXDist: 15, upperMinY: 46, upperMaxY: 86,
-  lowerH: 74, lowerXDist: 30, lowerMinY: 46, lowerMaxY: 122,
+  upperXDist:  83, upperMinY: 255, upperMaxY: 476,
+  lowerH:     410, lowerXDist: 166, lowerMinY: 255, lowerMaxY: 676,
 };
 const O_DEF = {
-  upperXDist: 15, upperMinY: 42, upperMaxY: 82,
-  lowerH: 74, lowerXDist: 30, lowerMinY: 42, lowerMaxY: 118,
+  upperXDist:  83, upperMinY: 233, upperMaxY: 454,
+  lowerH:     410, lowerXDist: 166, lowerMinY: 233, lowerMaxY: 654,
 };
 
 // Colors
@@ -118,14 +122,23 @@ const SectionSvg: React.FC<SectionSvgProps> = ({ section, focusedField, onRegion
   const isR = section.id === "robot-origin";
   const DEF = isR ? R_DEF : O_DEF;
 
-  // Resolve every input (empty → default, invalid → default)
-  const uMinY = parse(section.upperBox.minYDistance, DEF.upperMinY);
-  const uMaxY = parse(section.upperBox.maxYDistance, DEF.upperMaxY);
-  const uX    = parse(section.upperBox.xDistance,    DEF.upperXDist);
-  const lH    = parse(section.lowerBox.height,       DEF.lowerH);
-  const lMinY = parse(section.lowerBox.minYDistance, DEF.lowerMinY);
-  const lMaxY = parse(section.lowerBox.maxYDistance, DEF.lowerMaxY);
-  const lX    = parse(section.lowerBox.xDistance,    DEF.lowerXDist);
+  // Resolve every input in mm (empty → default mm, invalid → default mm)
+  const uMinYmm = parse(section.upperBox.minYDistance, DEF.upperMinY);
+  const uMaxYmm = parse(section.upperBox.maxYDistance, DEF.upperMaxY);
+  const uXmm    = parse(section.upperBox.xDistance,    DEF.upperXDist);
+  const lHmm    = parse(section.lowerBox.height,       DEF.lowerH);
+  const lMinYmm = parse(section.lowerBox.minYDistance, DEF.lowerMinY);
+  const lMaxYmm = parse(section.lowerBox.maxYDistance, DEF.lowerMaxY);
+  const lXmm    = parse(section.lowerBox.xDistance,    DEF.lowerXDist);
+
+  // Convert mm → px for rendering
+  const uMinY = mmToPx(uMinYmm);
+  const uMaxY = mmToPx(uMaxYmm);
+  const uX    = mmToPx(uXmm);
+  const lH    = mmToPx(lHmm);
+  const lMinY = mmToPx(lMinYmm);
+  const lMaxY = mmToPx(lMaxYmm);
+  const lX    = mmToPx(lXmm);
 
   const dsOx = isR ? R_DS_ORIGIN_X : O_DS_ORIGIN_X;
 
@@ -213,30 +226,30 @@ const SectionSvg: React.FC<SectionSvgProps> = ({ section, focusedField, onRegion
     switch (field) {
       case "upperBox.xDistance":
         return isR
-          ? <DimLine x1={wallFace} y1={uZc} x2={wallFace + uX} y2={uZc} label={fmt(uX)} />
-          : <DimLine x1={wallFace - uX} y1={uZc} x2={wallFace} y2={uZc} label={fmt(uX)} />;
+          ? <DimLine x1={wallFace} y1={uZc} x2={wallFace + uX} y2={uZc} label={fmt(uXmm)} />
+          : <DimLine x1={wallFace - uX} y1={uZc} x2={wallFace} y2={uZc} label={fmt(uXmm)} />;
       case "upperBox.minYDistance":
         return isR
-          ? <DimLine x1={dsOx - uMinY} y1={uZc} x2={dsOx} y2={uZc} label={fmt(uMinY)} />
-          : <DimLine x1={dsOx} y1={uZc} x2={dsOx + uMinY} y2={uZc} label={fmt(uMinY)} />;
+          ? <DimLine x1={dsOx - uMinY} y1={uZc} x2={dsOx} y2={uZc} label={fmt(uMinYmm)} />
+          : <DimLine x1={dsOx} y1={uZc} x2={dsOx + uMinY} y2={uZc} label={fmt(uMinYmm)} />;
       case "upperBox.maxYDistance":
         return isR
-          ? <DimLine x1={dsOx - uMaxY} y1={uZc} x2={dsOx} y2={uZc} label={fmt(uMaxY)} />
-          : <DimLine x1={dsOx} y1={uZc} x2={dsOx + uMaxY} y2={uZc} label={fmt(uMaxY)} />;
+          ? <DimLine x1={dsOx - uMaxY} y1={uZc} x2={dsOx} y2={uZc} label={fmt(uMaxYmm)} />
+          : <DimLine x1={dsOx} y1={uZc} x2={dsOx + uMaxY} y2={uZc} label={fmt(uMaxYmm)} />;
       case "lowerBox.height":
-        return <DimLine x1={lYc} y1={lBoxY} x2={lYc} y2={DS_ORIGIN_Y} label={fmt(lH)} />;
+        return <DimLine x1={lYc} y1={lBoxY} x2={lYc} y2={DS_ORIGIN_Y} label={fmt(lHmm)} />;
       case "lowerBox.xDistance":
         return isR
-          ? <DimLine x1={wallFace} y1={lZc} x2={wallFace + lX} y2={lZc} label={fmt(lX)} />
-          : <DimLine x1={wallFace - lX} y1={lZc} x2={wallFace} y2={lZc} label={fmt(lX)} />;
+          ? <DimLine x1={wallFace} y1={lZc} x2={wallFace + lX} y2={lZc} label={fmt(lXmm)} />
+          : <DimLine x1={wallFace - lX} y1={lZc} x2={wallFace} y2={lZc} label={fmt(lXmm)} />;
       case "lowerBox.minYDistance":
         return isR
-          ? <DimLine x1={dsOx - lMinY} y1={lZc} x2={dsOx} y2={lZc} label={fmt(lMinY)} />
-          : <DimLine x1={dsOx} y1={lZc} x2={dsOx + lMinY} y2={lZc} label={fmt(lMinY)} />;
+          ? <DimLine x1={dsOx - lMinY} y1={lZc} x2={dsOx} y2={lZc} label={fmt(lMinYmm)} />
+          : <DimLine x1={dsOx} y1={lZc} x2={dsOx + lMinY} y2={lZc} label={fmt(lMinYmm)} />;
       case "lowerBox.maxYDistance":
         return isR
-          ? <DimLine x1={dsOx - lMaxY} y1={lZc} x2={dsOx} y2={lZc} label={fmt(lMaxY)} />
-          : <DimLine x1={dsOx} y1={lZc} x2={dsOx + lMaxY} y2={lZc} label={fmt(lMaxY)} />;
+          ? <DimLine x1={dsOx - lMaxY} y1={lZc} x2={dsOx} y2={lZc} label={fmt(lMaxYmm)} />
+          : <DimLine x1={dsOx} y1={lZc} x2={dsOx + lMaxY} y2={lZc} label={fmt(lMaxYmm)} />;
       default:
         return null;
     }
