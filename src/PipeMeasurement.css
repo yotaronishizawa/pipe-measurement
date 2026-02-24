@@ -1,0 +1,259 @@
+/* =============================================
+   PipeMeasurement – Figma: Autail / 40005493:24193
+   "Pipe Measurement / When there are pipes at both side"
+   ============================================= */
+
+/* Panel -------------------------------------------------------- */
+.pm-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  width: 470px;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+/* Header ------------------------------------------------------- */
+.pm-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pm-header__title {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+  color: #111928;
+}
+
+.pm-header__subtitle {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: #6b7280;
+}
+
+/* Section ------------------------------------------------------ */
+.pm-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+}
+
+.pm-section__header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.pm-section__title {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  color: #111928;
+}
+
+/* Delete button */
+.pm-section__delete-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  padding: 5.5px 12px;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.pm-section__delete-btn:hover {
+  background: #f9fafb;
+}
+
+.pm-section__delete-btn:active {
+  background: #f3f4f6;
+}
+
+.pm-section__delete-label {
+  font-family: "Geist", "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #111928;
+}
+
+/* Input group -------------------------------------------------- */
+.pm-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+}
+
+.pm-input-group__title {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+  color: #111928;
+}
+
+.pm-input-group__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Field (label + input + error) -------------------------------- */
+.pm-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pm-field__input-row {
+  position: relative;
+}
+
+.pm-field__input-row .pm-field__input {
+  padding-right: 32px;
+}
+
+.pm-field__steppers {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  pointer-events: none;
+}
+
+.pm-field__step-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 14px;
+  padding: 0;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 3px;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background 0.1s;
+}
+
+.pm-field__step-btn:hover {
+  background: #e5e7eb;
+}
+
+.pm-field__step-btn:active {
+  background: #d1d5db;
+}
+
+.pm-field__label {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: #111928;
+}
+
+.pm-field__input {
+  height: 36px;
+  padding: 7.5px 12px;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  color: #111928;
+  box-sizing: border-box;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.pm-field__input:focus,
+.pm-field__input--focused {
+  border-color: #6b7280;
+  box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.15);
+  outline: none;
+}
+
+/* Highlight label when focused */
+.pm-field__label--focused {
+  color: #EF4444;
+  font-weight: 600;
+}
+
+.pm-field__input--error {
+  border-color: #dc2626;
+}
+
+.pm-field__input--error:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+.pm-field__error {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  color: #dc2626;
+}
+
+/* Collapsed section (deleted state) ---------------------------- */
+.pm-section--collapsed {
+  gap: 0;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.pm-section--collapsed .pm-section__title {
+  margin-bottom: 24px;
+}
+
+/* "パイプを追加" button (Figma: Button Complete, bg #f3f4f6) */
+.pm-section__add-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9.5px 24px;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #111928;
+  box-sizing: border-box;
+  transition: background 0.15s;
+}
+
+.pm-section__add-btn:hover {
+  background: #e5e7eb;
+}
+
+.pm-section__add-btn:active {
+  background: #d1d5db;
+}

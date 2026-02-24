@@ -1,0 +1,36 @@
+body {
+  margin: 0;
+  background: #f9fafc;
+  font-family: "Inter", sans-serif;
+}
+
+/* Full-page horizontal layout matching Figma 1728x1648 */
+.app-root {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+}
+
+/* Rectangle 140 – grey left divider (40px) */
+.app-divider {
+  flex-shrink: 0;
+  width: 40px;
+  background: #d9d9d9;
+}
+
+/* Left sidebar – form panel (502px) */
+.app-sidebar {
+  flex-shrink: 0;
+  width: 502px;
+  padding: 16px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+/* Main content area – pipe diagram */
+.app-main {
+  flex: 1;
+  padding: 16px 24px;
+  box-sizing: border-box;
+  overflow: auto;
+}

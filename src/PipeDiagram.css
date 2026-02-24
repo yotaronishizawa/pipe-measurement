@@ -1,0 +1,31 @@
+.pd-card {
+  display: flex;
+  flex-direction: column;
+  gap: 21px;
+  padding: 32px;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  box-sizing: border-box;
+  max-width: 1170px;
+}
+
+.pd-title {
+  font-family: "Inter", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #000;
+  text-align: center;
+}
+
+.pd-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.pd-section-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
