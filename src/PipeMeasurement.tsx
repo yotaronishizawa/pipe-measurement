@@ -37,13 +37,15 @@ interface InputFieldProps {
   onChange: (v: string) => void;
   onFocus: () => void;
   onBlur: () => void;
+  onHover: () => void;
+  onHoverEnd: () => void;
   isFocused: boolean;
 }
 
 const isValidNumber = (v: string) => v === "" || /^-?\d*\.?\d*$/.test(v);
 
 const InputField: React.FC<InputFieldProps> = ({
-  label, value, onChange, onFocus, onBlur, isFocused,
+  label, value, onChange, onFocus, onBlur, onHover, onHoverEnd, isFocused,
 }) => {
   const hasError = value !== "" && !isValidNumber(value);
 
@@ -54,7 +56,7 @@ const InputField: React.FC<InputFieldProps> = ({
   };
 
   return (
-    <div className="pm-field">
+    <div className="pm-field" onMouseEnter={onHover} onMouseLeave={onHoverEnd}>
       <label className={`pm-field__label${isFocused ? " pm-field__label--focused" : ""}`}>
         {label}
       </label>
@@ -104,10 +106,12 @@ interface SectionCardProps {
   onDelete: (id: string) => void;
   onFieldFocus: (fieldId: string) => void;
   onFieldBlur: () => void;
+  onFieldHover: (fieldId: string) => void;
+  onFieldHoverEnd: () => void;
 }
 
 const SectionCard: React.FC<SectionCardProps> = ({
-  section, focusedField, onUpdate, onDelete, onFieldFocus, onFieldBlur,
+  section, focusedField, onUpdate, onDelete, onFieldFocus, onFieldBlur, onFieldHover, onFieldHoverEnd,
 }) => {
   const sid = section.id;
   const fid = (path: string) => `${sid}.${path}`;
@@ -129,6 +133,8 @@ const SectionCard: React.FC<SectionCardProps> = ({
       label={label} value={value} onChange={onChange}
       onFocus={() => onFieldFocus(fid(path))}
       onBlur={onFieldBlur}
+      onHover={() => onFieldHover(fid(path))}
+      onHoverEnd={onFieldHoverEnd}
       isFocused={isF(path)}
     />
   );
@@ -185,10 +191,12 @@ export interface PipeMeasurementProps {
   onAdd: (id: string) => void;
   onFieldFocus: (fieldId: string) => void;
   onFieldBlur: () => void;
+  onFieldHover: (fieldId: string) => void;
+  onFieldHoverEnd: () => void;
 }
 
 const PipeMeasurement: React.FC<PipeMeasurementProps> = ({
-  sections, focusedField, onUpdate, onDelete, onAdd, onFieldFocus, onFieldBlur,
+  sections, focusedField, onUpdate, onDelete, onAdd, onFieldFocus, onFieldBlur, onFieldHover, onFieldHoverEnd,
 }) => (
   <div className="pm-panel">
     <div className="pm-header">
@@ -201,6 +209,7 @@ const PipeMeasurement: React.FC<PipeMeasurementProps> = ({
           key={s.id} section={s} focusedField={focusedField}
           onUpdate={onUpdate} onDelete={onDelete}
           onFieldFocus={onFieldFocus} onFieldBlur={onFieldBlur}
+          onFieldHover={onFieldHover} onFieldHoverEnd={onFieldHoverEnd}
         />
       ) : (
         <CollapsedCard key={s.id} label={s.label} onAdd={() => onAdd(s.id)} />

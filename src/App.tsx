@@ -36,6 +36,9 @@ function App() {
   const [sections, setSections] = useState<PipeSection[]>(initialSections);
   // "sectionId.boxType.fieldName"  e.g. "robot-origin.upperBox.xDistance"
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [hoveredField, setHoveredField] = useState<string | null>(null);
+  // Focus takes priority over hover for the active highlight
+  const activeField = focusedField ?? hoveredField;
 
   const handleUpdate = (updated: PipeSection) =>
     setSections((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
@@ -52,16 +55,18 @@ function App() {
       <div className="app-sidebar">
         <PipeMeasurement
           sections={sections}
-          focusedField={focusedField}
+          focusedField={activeField}
           onUpdate={handleUpdate}
           onDelete={handleDelete}
           onAdd={handleAdd}
           onFieldFocus={setFocusedField}
           onFieldBlur={() => setFocusedField(null)}
+          onFieldHover={setHoveredField}
+          onFieldHoverEnd={() => setHoveredField(null)}
         />
       </div>
       <div className="app-main">
-        <PipeDiagram sections={sections} focusedField={focusedField} onRegionFocus={setFocusedField} />
+        <PipeDiagram sections={sections} focusedField={activeField} onRegionFocus={setFocusedField} />
       </div>
     </div>
   );
