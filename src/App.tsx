@@ -19,7 +19,7 @@ export interface LowerBoxFields {
 export interface PipeSection {
   id: "robot-origin" | "opposite";
   label: string;
-  isActive: boolean;
+  pipePresent: "unanswered" | "yes" | "no";
   upperBox: BoxFields;
   lowerBox: LowerBoxFields;
 }
@@ -28,8 +28,8 @@ const emptyBox = (): BoxFields => ({ xDistance: "", minYDistance: "", maxYDistan
 const emptyLowerBox = (): LowerBoxFields => ({ height: "", xDistance: "", minYDistance: "", maxYDistance: "" });
 
 const initialSections: PipeSection[] = [
-  { id: "robot-origin", label: "ロボット原点側", isActive: true, upperBox: emptyBox(), lowerBox: emptyLowerBox() },
-  { id: "opposite",     label: "反対側",         isActive: true, upperBox: emptyBox(), lowerBox: emptyLowerBox() },
+  { id: "robot-origin", label: "ロボット原点側 (Forward)", pipePresent: "unanswered", upperBox: emptyBox(), lowerBox: emptyLowerBox() },
+  { id: "opposite",     label: "反対側 (Aft)",             pipePresent: "unanswered", upperBox: emptyBox(), lowerBox: emptyLowerBox() },
 ];
 
 function App() {
@@ -43,11 +43,12 @@ function App() {
   const handleUpdate = (updated: PipeSection) =>
     setSections((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
 
+  // Trash can → go back to unanswered prompt
   const handleDelete = (id: string) =>
-    setSections((prev) => prev.map((s) => (s.id === id ? { ...s, isActive: false } : s)));
+    setSections((prev) => prev.map((s) => (s.id === id ? { ...s, pipePresent: "unanswered" } : s)));
 
-  const handleAdd = (id: string) =>
-    setSections((prev) => prev.map((s) => (s.id === id ? { ...s, isActive: true } : s)));
+  const handleAnswer = (id: string, answer: "yes" | "no") =>
+    setSections((prev) => prev.map((s) => (s.id === id ? { ...s, pipePresent: answer } : s)));
 
   return (
     <div className="app-root">
@@ -58,7 +59,7 @@ function App() {
           focusedField={activeField}
           onUpdate={handleUpdate}
           onDelete={handleDelete}
-          onAdd={handleAdd}
+          onAnswer={handleAnswer}
           onFieldFocus={setFocusedField}
           onFieldBlur={() => setFocusedField(null)}
           onFieldHover={setHoveredField}

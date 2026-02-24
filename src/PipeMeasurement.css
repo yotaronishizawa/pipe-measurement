@@ -218,42 +218,60 @@
   color: #dc2626;
 }
 
-/* Collapsed section (deleted state) ---------------------------- */
-.pm-section--collapsed {
-  gap: 0;
-  flex-direction: column;
-  align-items: flex-start;
+/* Prompt card (unanswered state) ------------------------------- */
+.pm-section--prompt {
+  gap: 16px;
 }
 
-.pm-section--collapsed .pm-section__title {
-  margin-bottom: 24px;
+.pm-prompt__question {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
 }
 
-/* "パイプを追加" button (Figma: Button Complete, bg #f3f4f6) */
-.pm-section__add-btn {
+.pm-prompt__actions {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
   gap: 8px;
-  width: 100%;
-  padding: 9.5px 24px;
-  background: #f3f4f6;
-  border: none;
+}
+
+.pm-prompt__btn {
+  flex: 1;
+  padding: 9px 0;
   border-radius: 8px;
-  cursor: pointer;
   font-family: "Inter", sans-serif;
   font-size: 14px;
   font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.pm-prompt__btn--yes {
+  background: #111928;
+  color: #ffffff;
+  border: 1px solid #111928;
+}
+
+.pm-prompt__btn--yes:hover {
+  background: #1f2937;
+  border-color: #1f2937;
+}
+
+.pm-prompt__btn--no {
+  background: #ffffff;
   color: #111928;
-  box-sizing: border-box;
-  transition: background 0.15s;
+  border: 1px solid #d1d5db;
 }
 
-.pm-section__add-btn:hover {
-  background: #e5e7eb;
+.pm-prompt__btn--no:hover {
+  background: #f9fafb;
 }
 
-.pm-section__add-btn:active {
-  background: #d1d5db;
+/* No-pipe card (no state) -------------------------------------- */
+.pm-no-pipe__message {
+  margin: 0;
+  font-size: 13px;
+  color: #6b7280;
+  font-style: italic;
+  line-height: 20px;
 }
